@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      target: run-app
+    container_name: web
+    networks:
+      - mynet
+    environment:
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/app?sslmode=disable
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+
+  tests:
+    build:
+      context: .
+      target: run-test
+    container_name: tests
+    networks:
+      - mynet
+    depends_on:
+      - db
+
+  db:
+    image: postgres:latest
+    container_name: postgres
+    networks:
+      - mynet
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=app
+    ports:
+      - 5432:5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
+
+networks:
+  mynet:
+    driver: bridge
