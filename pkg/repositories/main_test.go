@@ -23,7 +23,7 @@ func TestMain(m *testing.M) {
 		user = "postgres:postgres"
 	}
 
-	dbURL := fmt.Sprintf("postgres://%s@db/?sslmode=disable", user)
+	dbURL := fmt.Sprintf("postgres://%s@localhost/?sslmode=disable", user)
 
 	conn, err := db.Open(dbURL)
 	if err != nil {
@@ -37,7 +37,7 @@ func TestMain(m *testing.M) {
 		log.Fatalf("error creating test database: %s", err.Error())
 	}
 
-	dbTestURL := fmt.Sprintf("postgres://%s@db/%s?sslmode=disable", user, testDBName)
+	dbTestURL := fmt.Sprintf("postgres://%s@localhost/%s?sslmode=disable", user, testDBName)
 
 	_, err = db.Migrate(dbTestURL, migrate.Up, 0, http.FS(migrations.FS))
 	if err != nil {
